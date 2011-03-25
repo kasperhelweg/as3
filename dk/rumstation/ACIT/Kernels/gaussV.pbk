@@ -1,0 +1,28 @@
+<languageVersion : 1.0;>
+
+kernel gaussV
+<   namespace : "dk.kasperhelweg";
+    vendor : "Kasper Helweg Jonassen";
+    version : 1;
+>
+{
+    input image4 src;
+    output pixel4 dst;
+
+    void
+    evaluatePixel()
+    {
+    float4 center;
+        float4 band1;
+        float4 band2;
+        float2 pos = outCoord();
+        
+        center = sampleNearest(src, pos);
+        band1 = sampleNearest(src, float2(pos.x - 1.0, pos.y)) + sampleNearest(src, float2(pos.x + 1.0, pos.y));
+        band2 = sampleNearest(src, float2(pos.x - 2.0, pos.y)) + sampleNearest(src, float2(pos.x + 2.0, pos.y));
+        
+        dst = (band2 + (band1 * 4.0) + (center * 6.0)) / 16.0;
+    }
+}
+
+
